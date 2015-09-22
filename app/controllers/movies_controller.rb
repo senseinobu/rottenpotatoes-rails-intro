@@ -13,9 +13,9 @@ class MoviesController < ApplicationController
   def index
     @movies = Movie.all
     if params[:sort] == "title"
-      @movies.sort { |x,y| x.lower <=> y.lower}
+      @movies.sort { |x,y| x.title.lower <=> y.title.lower}
     elsif params[:sort] == "release_date"
-      @movies.sort { |x,y| x.lower <=> y.lower}
+      @movies.sort { |x,y| x.release_date <=> y.release_date}
     end
   end
 
