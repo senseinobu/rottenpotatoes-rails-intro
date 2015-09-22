@@ -11,12 +11,20 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @movies = (params[:ratings])? Movie.where(rating: params[:ratings].keys):Movie.all
     @all_ratings = Movie.all_ratings
-    @movies = Movie.all
+    
+    @checked = {}
+    if params[:ratings]
+      @checked = @all_ratings.collect{|rating| [rating, params[:ratings].keys.include?(rating)] }.to_h
+    end
+    
     if params[:sort] == "title"
       @movies = @movies.sort { |x,y| x.title.downcase <=> y.title.downcase}
+      @title_header = "hilite"
     elsif params[:sort] == "release_date"
       @movies = @movies.sort { |x,y| x.release_date <=> y.release_date}
+      @release_date_header = "hilite"
     end
   end
 
