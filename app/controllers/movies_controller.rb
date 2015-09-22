@@ -11,18 +11,17 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = (params[:ratings])? Movie.where(rating: params[:ratings].keys):Movie.all
     @all_ratings = Movie.all_ratings
+    session[:ratings] = params[:ratings]|| session[:ratings]|| @all_ratings.collect{|rating| [rating, "1"]}.to_h
+    session[:sort] = params[:sort] || session[:sort]
+    @movies = Movie.where(rating: session[:ratings].keys)
     
-    @checked = {}
-    if params[:ratings]
-      @checked = @all_ratings.collect{|rating| [rating, params[:ratings].keys.include?(rating)] }.to_h
-    end
+    @checked = @all_ratings.collect{|rating| [rating, session[:ratings].keys.include?(rating)] }.to_h
     
-    if params[:sort] == "title"
+    if session[:sort] == "title"
       @movies = @movies.sort { |x,y| x.title.downcase <=> y.title.downcase}
       @title_header = "hilite"
-    elsif params[:sort] == "release_date"
+    elsif session[:sort] == "release_date"
       @movies = @movies.sort { |x,y| x.release_date <=> y.release_date}
       @release_date_header = "hilite"
     end
