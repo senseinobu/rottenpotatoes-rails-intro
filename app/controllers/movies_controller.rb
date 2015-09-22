@@ -11,6 +11,7 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.all_ratings
     @movies = Movie.all
     if params[:sort] == "title"
       @movies = @movies.sort { |x,y| x.title.downcase <=> y.title.downcase}
