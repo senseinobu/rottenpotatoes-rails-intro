@@ -13,7 +13,11 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.all_ratings
     session[:ratings] = params[:ratings]|| session[:ratings]|| @all_ratings.collect{|rating| [rating, "1"]}.to_h
-    session[:sort] = params[:sort] || session[:sort]
+    if params[:sort] != session[:sort] || session[:ratings] != params[:ratings]
+      session[:sort] = params[:sort] || session[:sort]
+      flash.keep
+      redirect_to :controller => "movies", :action=>"index", :sort=>session[:sort], :ratings=>session[:ratings]
+    end
     @movies = Movie.where(rating: session[:ratings].keys)
     
     @checked = @all_ratings.collect{|rating| [rating, session[:ratings].keys.include?(rating)] }.to_h
